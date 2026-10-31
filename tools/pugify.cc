@@ -11,11 +11,12 @@
 #include <string>
 #include <vector>
 
+#define STB_IMAGE_IMPLEMENTATION
+#include "deps/stb_image.h"
 #include "deps/lodepng.h"
 #include "deps/lodepng.cpp"
 #include "deps/jpge.h"
 #include "deps/jpge.cpp"
-#include "deps/stb_image.c"
 
 #define VERSION "1.0.2"
 
@@ -107,7 +108,7 @@ int32_t swapbe( int32_t v ) {
     return v;
 };
 
-image decode_png( const void *ptr, size_t size ) {
+image decode_png( const void *ptr, unsigned size ) {
     int w = 0, h = 0, bpp = 0;
     stbi_uc *imageuc = stbi_load_from_memory( (const unsigned char *)ptr, size, &w, &h, &bpp, 4 );
     if( imageuc ) {
@@ -121,11 +122,11 @@ image decode_png( const void *ptr, size_t size ) {
     }
 }
 
-image decode_jpg( const void *ptr, size_t size ) {
+image decode_jpg( const void *ptr, unsigned size ) {
     return decode_png( ptr, size );
 }
 
-image decode_pug( const void *ptr, size_t size ) {
+image decode_pug( const void *ptr, unsigned size ) {
     image img = decode_jpg( ptr, size );
     // if .pug file, then decode alpha
     if( img.pixels.size() && 0 == memcmp( "pug1", (const char *)ptr + size - 4, 4 ) ) {
